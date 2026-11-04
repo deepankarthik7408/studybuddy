@@ -4,58 +4,83 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Study Buddy</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#16213E">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-  :root { --paper:#F5F7FA; --panel:#FFF; --ink:#16213E; --muted:#5B6578; --line:#DCE1EA; --accent:#0E7C86; --mark:#FFD23F; --good:#1F8A4C; --bad:#C2372B; }
+  :root { --paper:#F5F7FA; --panel:#FFF; --ink:#16213E; --muted:#5B6578; --line:#DCE1EA;
+          --accent:#0E7C86; --mark:#FFD23F; --good:#1F8A4C; --bad:#C2372B; }
   *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
-  body { font-family: "Segoe UI", system-ui, sans-serif; background: var(--paper); color: var(--ink); line-height: 1.6; }
-  main { width: 100%; max-width: 760px; margin: 0 auto; padding: 36px 20px 80px; }
-  h1 { font-size: 2.1rem; font-weight: 800; margin: 0 0 4px; letter-spacing: -0.02em; }
+  body { font-family: Manrope, system-ui, "Segoe UI", sans-serif; background: var(--paper); color: var(--ink); line-height: 1.6; }
+  main { width: 100%; max-width: 820px; margin: 0 auto; padding: 40px 20px 90px; }
+  h1 { font-size: 2.2rem; font-weight: 800; margin: 0 0 4px; letter-spacing: -0.02em; }
   h1 span { background: linear-gradient(transparent 60%, var(--mark) 60%); }
-  .sub { color: var(--muted); margin: 0 0 22px; }
-  .drop { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 140px;
-          padding: 24px; text-align: center; background: var(--panel); border: 2px dashed var(--line); border-radius: 14px; }
+  h3 { margin: 18px 0 6px; font-size: 1.05rem; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  .drop { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; width: 100%;
+          min-height: 140px; padding: 24px; text-align: center; background: var(--panel); border: 2px dashed var(--line); border-radius: 14px; }
   .drop.over { border-color: var(--accent); background: #EEF8F9; }
   .drop p { margin: 0; color: var(--muted); }
   #docname { font-weight: 600; color: var(--ink); word-break: break-word; }
   #file { display: none; }
-  nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 22px 0 14px; }
-  nav button { font: inherit; font-weight: 600; padding: 9px 6px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
+  nav { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 6px; margin: 24px 0 16px; }
+  nav button { font: inherit; font-weight: 600; padding: 9px 6px; border-radius: 10px; border: 1px solid var(--line);
+               background: var(--panel); color: var(--ink); cursor: pointer; }
   nav button[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
-  @media (max-width: 520px) { nav { grid-template-columns: repeat(2, 1fr); } }
-  button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, .card:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
   .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
   .panel[hidden] { display: none; }
   .go { font: inherit; font-weight: 600; background: var(--accent); color: #fff; border: 0; border-radius: 10px; padding: 10px 18px; cursor: pointer; }
   .go:disabled { opacity: .5; cursor: wait; }
-  .link { font: inherit; background: none; border: 0; color: var(--accent); text-decoration: underline; cursor: pointer; padding: 0; }
+  .ghost { font: inherit; font-weight: 600; background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 10px 18px; cursor: pointer; }
   .out { white-space: pre-wrap; margin-top: 16px; overflow-wrap: anywhere; }
-  .row { display: flex; gap: 8px; align-items: stretch; }
-  .row input { flex: 1; min-width: 0; font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; }
+  .row { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap; }
+  input, select, textarea { font: inherit; color: var(--ink); padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; min-width: 0; }
+  .row input.grow { flex: 1; }
   .q { margin: 20px 0 0; }
   .q p { font-weight: 600; margin: 0 0 8px; }
-  .opt { display: block; width: 100%; text-align: left; font: inherit; color: var(--ink); padding: 9px 12px; margin: 6px 0; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); cursor: pointer; }
+  .opt { display: block; width: 100%; text-align: left; font: inherit; color: var(--ink); padding: 9px 12px; margin: 6px 0;
+         border: 1px solid var(--line); border-radius: 10px; background: var(--panel); cursor: pointer; }
   .opt:disabled { cursor: default; }
+  .opt.sel { border-color: var(--accent); background: #EEF8F9; }
   .opt.right { border-color: var(--good); background: #E7F5EC; }
   .opt.wrong { border-color: var(--bad); background: #FBEAE8; }
   .why { color: var(--muted); font-size: .92rem; margin-top: 6px; }
-  .card { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 160px; margin-top: 16px; padding: 24px; text-align: center;
-          font: inherit; font-size: 1.15rem; font-weight: 600; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 14px; cursor: pointer; }
+  details { margin-top: 6px; } summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+  details .out { margin-top: 8px; }
+  .flag { font: inherit; font-size: .82rem; background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; padding: 4px 0; }
+  .card { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 160px; margin-top: 16px; padding: 24px;
+          text-align: center; font: inherit; font-size: 1.15rem; font-weight: 600; color: var(--ink); background: var(--panel);
+          border: 1px solid var(--line); border-radius: 14px; cursor: pointer; }
   .card.back { background: var(--ink); color: #fff; }
   .cardnav { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; color: var(--muted); }
   .err { color: var(--bad); margin-top: 14px; }
-  #keybox { margin-bottom: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 14px; }
+  label { display: block; font-weight: 600; font-size: .9rem; }
+  label input, label select { display: block; width: 100%; margin-top: 4px; font-weight: 400; }
+  .sheet ul { margin: 4px 0 8px; padding-left: 20px; } .sheet dt { font-weight: 600; } .sheet dd { margin: 0 0 6px; color: var(--muted); }
+  .bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 14px; margin-bottom: 8px;
+         background: var(--ink); color: #fff; border-radius: 10px; position: sticky; top: 8px; z-index: 2; }
+  .bar .go { background: var(--mark); color: var(--ink); }
+  .fab { position: fixed; right: 16px; bottom: 16px; z-index: 5; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+  dialog { width: min(480px, 92vw); border: 1px solid var(--line); border-radius: 14px; padding: 20px; color: var(--ink); }
+  dialog textarea { width: 100%; margin: 8px 0 12px; }
+  .prov { border-top: 1px solid var(--line); margin-top: 16px; padding-top: 6px; }
+  .note { color: var(--muted); font-size: .9rem; }
+  @media (max-width: 520px) { .row { flex-direction: column; } }
+  @media print { body * { visibility: hidden; } #sheetOut, #sheetOut * { visibility: visible; }
+                 #sheetOut { position: absolute; left: 0; top: 0; width: 100%; } .flag { display: none; } }
 </style>
 </head>
 <body>
 <main>
   <h1>Study <span>Buddy</span></h1>
-  <p class="sub">Upload your notes, then get a summary, ask questions, take a quiz or flip flashcards. <button class="link" id="changeKey" type="button">Change API key</button></p>
-
-  <section class="panel" id="keybox" hidden>
-    <p style="margin-top:0"><strong>Paste your free Gemini key to start.</strong> Get one at aistudio.google.com/apikey (sign in with Google). It is saved on this computer only.</p>
-    <div class="row"><input id="keyIn" type="password" placeholder="Gemini API key" autocomplete="off"><button class="go" id="saveKey">Save key</button></div>
-  </section>
+  <p class="sub">Upload your notes, then revise, practise and sit a mock exam.</p>
+  <button class="ghost" id="install" type="button" hidden style="margin:-12px 0 16px">Install app</button>
 
   <div class="drop" id="drop">
     <p>Drag a PDF or text file here</p>
@@ -64,53 +89,149 @@
   </div>
   <input type="file" id="file" accept=".pdf,.txt,.md">
 
-  <nav role="tablist" id="tabs">
-    <button role="tab" aria-selected="true" data-tab="summary">Summary</button>
-    <button role="tab" aria-selected="false" data-tab="ask">Ask</button>
-    <button role="tab" aria-selected="false" data-tab="quiz">Quiz</button>
-    <button role="tab" aria-selected="false" data-tab="cards">Flashcards</button>
-  </nav>
+  <nav role="tablist" id="tabs"></nav>
 
-  <section class="panel" id="summary"><button class="go" id="goSummary">Summarise my notes</button><div class="out" id="summaryOut"></div></section>
+  <section class="panel" id="summary">
+    <button class="go" id="goSummary">Summarise my notes</button>
+    <div class="out" id="summaryOut"></div>
+  </section>
+
+  <section class="panel" id="sheet" hidden>
+    <div class="row">
+      <button class="go" id="goSheet">Make my cheat sheet</button>
+      <button class="ghost" id="printSheet" type="button">Print or save as PDF</button>
+    </div>
+    <div class="sheet" id="sheetOut"></div>
+  </section>
+
   <section class="panel" id="ask" hidden>
-    <div class="row"><input id="question" placeholder="Ask something about your notes"><button class="go" id="goAsk">Ask</button></div>
+    <div class="row">
+      <input class="grow" id="question" placeholder="Ask something about your notes">
+      <button class="go" id="goAsk">Ask</button>
+    </div>
     <div class="out" id="askOut"></div>
   </section>
-  <section class="panel" id="quiz" hidden><button class="go" id="goQuiz">Make a 5-question quiz</button><div id="quizOut"></div></section>
-  <section class="panel" id="cards" hidden><button class="go" id="goCards">Make flashcards</button><div id="cardOut"></div></section>
+
+  <section class="panel" id="questions" hidden>
+    <div class="row">
+      <select id="qKind" aria-label="Question type">
+        <option value="important">Important questions</option>
+        <option value="mcq">MCQs</option>
+        <option value="2">2-mark questions</option>
+        <option value="5">5-mark questions</option>
+        <option value="10">10-mark questions</option>
+      </select>
+      <input id="qCount" type="number" min="1" max="20" value="8" aria-label="How many" style="width:90px">
+      <button class="go" id="goQ">Generate</button>
+    </div>
+    <div id="qOut"></div>
+  </section>
+
+  <section class="panel" id="quiz" hidden>
+    <button class="go" id="goQuiz">Make a 5-question quiz</button>
+    <div id="quizOut"></div>
+  </section>
+
+  <section class="panel" id="mock" hidden>
+    <div class="grid">
+      <label>MCQs (1 mark)<input id="mMcq" type="number" min="0" max="30" value="10"></label>
+      <label>2-mark<input id="mTwo" type="number" min="0" max="30" value="5"></label>
+      <label>5-mark<input id="mFive" type="number" min="0" max="30" value="3"></label>
+      <label>10-mark<input id="mTen" type="number" min="0" max="30" value="2"></label>
+      <label>Minutes<input id="mMin" type="number" min="5" max="240" value="60"></label>
+    </div>
+    <button class="go" id="goMock">Start mock exam</button>
+    <div id="mockOut"></div>
+  </section>
+
+  <section class="panel" id="cards" hidden>
+    <button class="go" id="goCards">Make flashcards</button>
+    <div id="cardOut"></div>
+  </section>
+
+  <section class="panel" id="settings" hidden>
+    <label>Which AI to use
+      <select id="sMode">
+        <option value="auto">Auto (try Gemini, then Claude, then OpenAI)</option>
+        <option value="gemini">Gemini only</option>
+        <option value="claude">Claude only</option>
+        <option value="openai">OpenAI-compatible only</option>
+      </select>
+    </label>
+    <p class="note">Auto uses every AI that has a key saved and moves to the next one if the first is busy or fails. Keys are saved in settings.json on this computer, so do not share that file.</p>
+    <p class="note" id="hostNote" hidden>This is the online version: your keys are saved only in this browser and sent with your requests. They are never stored on the server.</p>
+    <div class="prov"><h3>Gemini (free key at aistudio.google.com/apikey)</h3>
+      <div class="grid"><label>API key<input id="gKey" type="password" autocomplete="off"></label><label>Model<input id="gModel"></label></div>
+      <button class="ghost" type="button" data-clear="gemini">Remove key</button></div>
+    <div class="prov"><h3>Claude (console.anthropic.com)</h3>
+      <div class="grid"><label>API key<input id="cKey" type="password" autocomplete="off"></label><label>Model<input id="cModel"></label></div>
+      <button class="ghost" type="button" data-clear="claude">Remove key</button></div>
+    <div class="prov"><h3>OpenAI or compatible (Groq, OpenRouter, local Ollama...)</h3>
+      <div class="grid"><label>API key<input id="oKey" type="password" autocomplete="off"></label><label>Model<input id="oModel"></label><label>Base URL<input id="oBase"></label></div>
+      <button class="ghost" type="button" data-clear="openai">Remove key</button></div>
+    <div class="row prov"><button class="go" id="saveSet">Save settings</button><button class="ghost" id="testSet">Test connection</button></div>
+    <p class="note" id="setSt" role="status"></p>
+  </section>
 
   <div class="err" id="err" role="alert"></div>
 </main>
 
+<button class="ghost fab" id="fab" type="button">Report a bug</button>
+<dialog id="rep">
+  <h3 style="margin-top:0">Report a bug</h3>
+  <p class="note" id="repCtx"></p>
+  <textarea id="repMsg" rows="5" placeholder="What went wrong? (wrong answer, broken question, error message...)"></textarea>
+  <div class="row"><button class="ghost" id="repCancel" type="button">Cancel</button><button class="go" id="repSend" type="button">Send report</button></div>
+  <p class="note" id="repSt" role="status"></p>
+</dialog>
+
 <script>
-let docId = null;
+let docId = null, curTab = "summary", repContext = "", timerId = null, hosted = false;
+const DEFAULT_MODELS = { gemini: "gemini-3.8-flash", claude: "claude-haiku-5-5", openai: "gpt-4o-mini" };
+const cfgGet = () => { try { return JSON.parse(localStorage.getItem("sb_cfg") || "{}"); } catch (e) { return {}; } };
+const ready = fetch("/api/settings").then((r) => r.json()).then((s) => { hosted = !!s.hosted; }).catch(() => {});
 const $ = (id) => document.getElementById(id);
 const txt = (v) => Array.isArray(v) ? v.join("\n") : String(v ?? "");
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = txt(text); return e; };
 const showErr = (m) => ($("err").textContent = m || "");
 
-async function api(path, body) {
-  if (!docId) { showErr("Upload a file first."); throw new Error("no doc"); }
+async function post(path, body) {
   showErr("");
   try {
-    const res = await fetch("/api/" + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ doc_id: docId, ...body }) });
+    await ready;
+    const headers = { "Content-Type": "application/json" };
+    if (hosted) headers["X-AI-Config"] = JSON.stringify(cfgGet());
+    const res = await fetch("/api/" + path, { method: "POST", headers, body: JSON.stringify(body) });
     const data = await res.json();
-    if (!res.ok) { if (res.status === 400) $("keybox").hidden = false; throw new Error(data.detail || "Something went wrong"); }
+    if (!res.ok) throw new Error(data.detail || "Something went wrong");
     return data;
   } catch (e) { showErr(e.message); throw e; }
+}
+function api(path, body) {
+  if (!docId) { showErr("Upload a file first."); return Promise.reject(new Error("no doc")); }
+  return post(path, { doc_id: docId, ...body });
 }
 async function run(btn, out, msg, fn) {
   out.textContent = msg; btn.disabled = true;
   try { await fn(out); } catch (e) { out.textContent = ""; } finally { btn.disabled = false; }
 }
 
-// ---- API key ----
-fetch("/api/key").then((r) => r.json()).then((s) => { $("keybox").hidden = s.has_key; });
-$("changeKey").onclick = () => { $("keybox").hidden = false; $("keyIn").focus(); };
-$("saveKey").onclick = async () => {
-  const key = $("keyIn").value.trim(); if (!key) return;
-  await fetch("/api/key", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key }) });
-  $("keyIn").value = ""; $("keybox").hidden = true; showErr("");
+// ---- report ----
+function openReport(context) {
+  repContext = context || ""; $("repMsg").value = ""; $("repSt").textContent = "";
+  $("repCtx").textContent = context ? "About this item: " + context.slice(0, 120) + (context.length > 120 ? "..." : "") : "Tab: " + curTab;
+  $("rep").showModal();
+}
+function flag(obj) {
+  const b = el("button", "flag", "Report a problem with this"); b.type = "button";
+  b.onclick = () => openReport(JSON.stringify(obj)); return b;
+}
+$("fab").onclick = () => openReport("");
+$("repCancel").onclick = () => $("rep").close();
+$("repSend").onclick = async () => {
+  const message = $("repMsg").value.trim(); if (!message) return;
+  try { await post("report", { tab: curTab, message, context: repContext }); $("repSt").textContent = "Saved to reports.jsonl. Thank you!"; setTimeout(() => $("rep").close(), 900); }
+  catch (e) { $("repSt").textContent = "Could not save the report."; }
 };
 
 // ---- upload ----
@@ -124,7 +245,7 @@ async function upload(file) {
     if (!res.ok) { $("docname").textContent = ""; return showErr(data.detail); }
     docId = data.doc_id; showErr("");
     $("docname").textContent = data.name + " is ready (" + data.chunks + " sections)";
-  } catch (e) { $("docname").textContent = ""; showErr("Upload failed."); }
+  } catch (e) { $("docname").textContent = ""; showErr("Upload failed. Is the server running?"); }
 }
 $("pick").onclick = () => $("file").click();
 $("file").onchange = (e) => { upload(e.target.files[0]); e.target.value = ""; };
@@ -133,40 +254,58 @@ $("file").onchange = (e) => { upload(e.target.files[0]); e.target.value = ""; };
 $("drop").addEventListener("drop", (e) => upload(e.dataTransfer.files[0]));
 
 // ---- tabs ----
-document.querySelectorAll("#tabs button").forEach((b) => b.onclick = () => {
-  document.querySelectorAll("#tabs button").forEach((x) => x.setAttribute("aria-selected", String(x === b)));
-  ["summary", "ask", "quiz", "cards"].forEach((t) => $(t).hidden = t !== b.dataset.tab);
+const TABS = [["summary", "Summary"], ["sheet", "Cheat sheet"], ["ask", "Ask"], ["questions", "Questions"], ["quiz", "Quiz"], ["mock", "Mock exam"], ["cards", "Flashcards"], ["settings", "Settings"]];
+TABS.forEach(([id, label]) => {
+  const b = el("button", null, label); b.dataset.tab = id; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(id === "summary"));
+  b.onclick = () => {
+    curTab = id;
+    document.querySelectorAll("#tabs button").forEach((x) => x.setAttribute("aria-selected", String(x === b)));
+    TABS.forEach(([t]) => $(t).hidden = t !== id);
+    if (id === "settings") loadSettings();
+  };
+  $("tabs").append(b);
 });
 
-// ---- summary / ask ----
+// ---- shared renderers ----
+function mcq(q, i, onPick) {
+  const box = el("div", "q"); box.append(el("p", null, (i + 1) + ". " + q.question));
+  const why = el("div", "why"), btns = []; let picked = null;
+  const reveal = () => {
+    btns.forEach((b, j) => { b.disabled = true; b.classList.remove("sel"); if (j === q.answer) b.classList.add("right"); else if (j === picked) b.classList.add("wrong"); });
+    why.textContent = q.explanation || "";
+  };
+  q.options.forEach((t, j) => {
+    const b = el("button", "opt", t); b.type = "button";
+    b.onclick = () => { picked = j; if (onPick) { btns.forEach((x) => x.classList.remove("sel")); b.classList.add("sel"); } else reveal(); };
+    btns.push(b); box.append(b);
+  });
+  box.append(why, flag(q));
+  return { box, reveal, correct: () => picked === q.answer };
+}
+function qa(item, i, hideAnswer) {
+  const box = el("div", "q");
+  box.append(el("p", null, (i + 1) + ". " + item.question + (item.marks ? " (" + item.marks + " marks)" : "")));
+  let d = null;
+  if (item.answer) { d = el("details"); d.append(el("summary", null, "Show answer"), el("div", "out", item.answer)); if (hideAnswer) d.hidden = true; box.append(d); }
+  if (item.why) box.append(el("div", "why", item.why));
+  box.append(flag(item));
+  return { box, d };
+}
+
+// ---- summary / ask / quiz / cards ----
 $("goSummary").onclick = (e) => run(e.target, $("summaryOut"), "Summarising...", async (out) => { out.textContent = (await api("summary", {})).summary; });
-function doAsk() {
+async function doAsk() {
   const q = $("question").value.trim(); if (!q) return;
   run($("goAsk"), $("askOut"), "Thinking...", async (out) => { out.textContent = (await api("ask", { question: q })).answer; });
 }
 $("goAsk").onclick = doAsk;
 $("question").onkeydown = (e) => e.key === "Enter" && doAsk();
 
-// ---- quiz ----
 $("goQuiz").onclick = (e) => run(e.target, $("quizOut"), "Writing questions...", async (out) => {
-  const { questions } = await api("quiz", { count: 5 }); out.textContent = "";
-  questions.forEach((q, i) => {
-    const box = el("div", "q"), why = el("div", "why"), btns = [];
-    box.append(el("p", null, (i + 1) + ". " + q.question));
-    q.options.forEach((t, j) => {
-      const b = el("button", "opt", t); b.type = "button";
-      b.onclick = () => {
-        btns.forEach((o, k) => { o.disabled = true; if (k === q.answer) o.classList.add("right"); });
-        if (j !== q.answer) b.classList.add("wrong");
-        why.textContent = q.explanation || "";
-      };
-      btns.push(b); box.append(b);
-    });
-    box.append(why); out.append(box);
-  });
+  const { questions } = await api("quiz", { count: 5 });
+  out.textContent = ""; questions.forEach((q, i) => out.append(mcq(q, i).box));
 });
 
-// ---- flashcards ----
 $("goCards").onclick = (e) => run(e.target, $("cardOut"), "Making cards...", async (out) => {
   const { cards } = await api("flashcards", { count: 8 });
   let i = 0, flipped = false; out.textContent = "";
@@ -179,6 +318,99 @@ $("goCards").onclick = (e) => run(e.target, $("cardOut"), "Making cards...", asy
   next.onclick = () => { i = (i + 1) % cards.length; flipped = false; draw(); };
   draw();
 });
+
+// ---- cheat sheet ----
+$("goSheet").onclick = (e) => run(e.target, $("sheetOut"), "Building your cheat sheet...", async (out) => {
+  const d = await api("cheatsheet", {}); out.textContent = "";
+  (d.sections || []).forEach((s) => { out.append(el("h3", null, s.title)); const ul = el("ul"); (s.points || []).forEach((p) => ul.append(el("li", null, p))); out.append(ul); });
+  if ((d.key_terms || []).length) { out.append(el("h3", null, "Key terms")); const dl = el("dl"); d.key_terms.forEach((t) => dl.append(el("dt", null, t.term), el("dd", null, t.meaning))); out.append(dl); }
+  if ((d.formulas_and_rules || []).length) { out.append(el("h3", null, "Formulas and rules")); const ul = el("ul"); d.formulas_and_rules.forEach((p) => ul.append(el("li", null, p))); out.append(ul); }
+  if ((d.remember || []).length) { out.append(el("h3", null, "Do not forget")); const ul = el("ul"); d.remember.forEach((p) => ul.append(el("li", null, p))); out.append(ul); }
+  out.append(flag({ cheatsheet: true }));
+});
+$("printSheet").onclick = () => window.print();
+
+// ---- questions ----
+$("goQ").onclick = (e) => run(e.target, $("qOut"), "Writing questions...", async (out) => {
+  const kind = $("qKind").value;
+  const d = await api("questions", { kind, count: +$("qCount").value || 8 });
+  out.textContent = ""; d.items.forEach((it, i) => out.append(kind === "mcq" ? mcq(it, i).box : qa(it, i).box));
+});
+
+// ---- mock exam ----
+$("goMock").onclick = (e) => run(e.target, $("mockOut"), "Setting the paper...", async (out) => {
+  const n = (id) => Math.max(0, Math.min(30, +$(id).value || 0));
+  const d = await api("mock", { mcq: n("mMcq"), two: n("mTwo"), five: n("mFive"), ten: n("mTen") });
+  out.textContent = ""; buildExam(out, d, Math.max(5, +$("mMin").value || 60));
+});
+function buildExam(out, d, minutes) {
+  clearInterval(timerId);
+  const total = d.mcq.length + d.two.length * 2 + d.five.length * 5 + d.ten.length * 10;
+  const bar = el("div", "bar"), clock = el("strong"), submit = el("button", "go", "Submit and see answers");
+  bar.append(el("span", null, "Total marks: " + total), clock, submit); out.append(bar);
+  const mcqs = [], answers = []; let q = 0;
+  const section = (title, items, make) => { if (!items.length) return; out.append(el("h3", null, title)); items.forEach((it) => make(it, q++)); };
+  section("Part A: MCQs (1 mark each)", d.mcq, (it, i) => { const m = mcq(it, i, true); mcqs.push(m); out.append(m.box); });
+  [["Part B: 2-mark questions", d.two], ["Part C: 5-mark questions", d.five], ["Part D: 10-mark questions", d.ten]].forEach(([title, items]) =>
+    section(title, items, (it, i) => { const r = qa(it, i, true); if (r.d) answers.push(r.d); out.append(r.box); }));
+  const result = el("h3"); out.append(result);
+  const end = Date.now() + minutes * 60000;
+  const finish = () => {
+    clearInterval(timerId); submit.disabled = true;
+    mcqs.forEach((m) => m.reveal()); answers.forEach((a) => { a.hidden = false; a.open = true; });
+    result.textContent = d.mcq.length ? "MCQ score: " + mcqs.filter((m) => m.correct()).length + " / " + d.mcq.length + ". Compare your written answers with the model answers." : "Compare your written answers with the model answers.";
+    result.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+  const tick = () => { const s = Math.max(0, Math.round((end - Date.now()) / 1000)); clock.textContent = String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); if (s === 0) finish(); };
+  submit.onclick = finish; timerId = setInterval(tick, 1000); tick();
+}
+
+// ---- settings ----
+async function loadSettings() {
+  try {
+    const s = await (await fetch("/api/settings")).json();
+    hosted = !!s.hosted;
+    const c = hosted ? cfgGet() : s;
+    $("sMode").value = c.mode || "auto";
+    [["g", "gemini"], ["c", "claude"], ["o", "openai"]].forEach(([k, p]) => {
+      const v = c[p] || {};
+      $(k + "Model").value = v.model || DEFAULT_MODELS[p];
+      $(k + "Key").value = hosted ? (v.key || "") : "";
+      $(k + "Key").placeholder = !hosted && v.has_key ? "Saved (ends in " + v.hint + "). Paste to replace." : "Paste your key";
+    });
+    $("oBase").value = (c.openai || {}).base_url || "https://api.openai.com/v1";
+    $("hostNote").hidden = !hosted;
+  } catch (e) { showErr("Could not load settings."); }
+}
+async function saveSettings(clear) {
+  const cfg = { mode: $("sMode").value,
+    gemini: { key: $("gKey").value.trim(), model: $("gModel").value }, claude: { key: $("cKey").value.trim(), model: $("cModel").value },
+    openai: { key: $("oKey").value.trim(), model: $("oModel").value, base_url: $("oBase").value } };
+  if (hosted) { (clear || []).forEach((p) => cfg[p].key = ""); localStorage.setItem("sb_cfg", JSON.stringify(cfg)); }
+  else await post("settings", { ...cfg, clear: clear || [] });
+  await loadSettings();
+}
+$("saveSet").onclick = async () => { try { await saveSettings(); $("setSt").textContent = "Saved."; } catch (e) { $("setSt").textContent = ""; } };
+document.querySelectorAll("[data-clear]").forEach((b) => b.onclick = async () => { try { await saveSettings([b.dataset.clear]); $("setSt").textContent = "Key removed."; } catch (e) {} });
+$("testSet").onclick = async (e) => {
+  e.target.disabled = true; $("setSt").textContent = "Testing...";
+  try { await saveSettings(); const r = await post("test", {}); $("setSt").textContent = "Working. Answered by: " + r.provider; }
+  catch (err) { $("setSt").textContent = "Test failed (see the red message)."; } finally { e.target.disabled = false; }
+};
+// ---- first run: ask for a key ----
+ready.then(async () => {
+  try {
+    const s = await (await fetch("/api/settings")).json(), P = ["gemini", "claude", "openai"];
+    const none = s.hosted ? !P.some((p) => (cfgGet()[p] || {}).key) : !P.some((p) => s[p].has_key);
+    if (none) { document.querySelector('[data-tab="settings"]').click(); $("setSt").textContent = "Paste an API key and press Save settings to get started."; }
+  } catch (e) {}
+});
+
+// ---- install as an app ----
+let deferred = null;
+window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferred = e; $("install").hidden = false; });
+$("install").onclick = async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; $("install").hidden = true; };
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {});
 </script>
 </body>
 </html>
